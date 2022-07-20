@@ -5,4 +5,5 @@
 	font-weight: 900;
 	color: rgba(175, 47, 47, 0.15);
 	margin-bottom: 20px;
+	user-select: none;
 }
