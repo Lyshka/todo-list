@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import {useState} from "react";
 import {connect} from "react-redux";
 import {addTast, removeTask, completeTask, changeFilter} from '../../actions/actionCreator'
 import Footer from "../../components/footer/Footer";
@@ -7,32 +7,21 @@ import ToDoList from "../../components/todo-list/Todo-list";
 
 import './Todo.css'
 
-class ToDo extends Component {
-	state = {
-		taskText: ''
+const ToDo = ({tasks, removeTask, completeTask, filters, changeFilter, addTast}) => {
+	const [taskText, setTaskText] = useState('')
+
+	const handleInputChange = ({target: {value}}) => {
+		setTaskText(value)
 	}
 
-	handleInputChange = ({target: {value}}) => {
-		this.setState({
-			taskText: value
-		})
-	}
-
-	addTast = ({key}) => {
-		const {taskText} = this.state
-
+	const addTask = ({key}) => {
 		if (taskText.length > 3 && key === 'Enter') {
-			const {addTast} = this.props
-
 			addTast((new Date()).getTime(), taskText, false)
-
-			this.setState({
-				taskText: ''
-			})
+			setTaskText('')
 		}
 	}
 
-	filterTasks = (tasks, activeFilter) => {
+	const filterTasks = (tasks, activeFilter) => {
 		switch (activeFilter) {
 			case 'completed':
 				return tasks.filter(task => task.isCompleted)
@@ -43,23 +32,18 @@ class ToDo extends Component {
 		}
 	}
 
-	getActiveTasksCounter = tasks => tasks.filter(task => !task.isCompleted).length
-
-	render() {
-		const {taskText} = this.state
-		const {tasks, removeTask, completeTask, filters, changeFilter} = this.props
+	const getActiveTasksCounter = tasks => tasks.filter(task => !task.isCompleted).length
 		const isTasksExist = tasks && tasks.length > 0
-		const filteredTasks = this.filterTasks(tasks, filters)
-		const taskCounter = this.getActiveTasksCounter(tasks)
+		const filteredTasks = filterTasks(tasks, filters)
+		const taskCounter = getActiveTasksCounter(tasks)
 
 		return (
 			<div className="todo-wrapper">
-				<ToDoInput onKeyPress={this.addTast} onChange={this.handleInputChange} value={taskText}/>
+				<ToDoInput onKeyPress={addTask} onChange={handleInputChange} value={taskText}/>
 				{isTasksExist && <ToDoList completeTask={completeTask} tasksList={filteredTasks} removeTask={removeTask}/>}
 				{isTasksExist && <Footer changeFilter={changeFilter} amount={taskCounter} activeFilter={filters}/>}
 			</div>
 		)
-	}
 }
 
 export default connect(({tasks, filters}) => ({
