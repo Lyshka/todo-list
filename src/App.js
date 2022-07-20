@@ -4,7 +4,7 @@ import ToDo from "./containers/todo/Todo";
 
 const App = () => (
 	<>
-		<Title title="ToDo App"/>
+		<Title title="ToDo App Lyshka"/>
 		<ToDo />
 	</>
 )
